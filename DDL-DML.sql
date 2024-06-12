@@ -1,6 +1,7 @@
 -- MySQL Workbench Forward Engineering
 
 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
+SET GLOBAL log_bin_trust_function_creators = 1;
 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
 
@@ -11,11 +12,10 @@ SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,N
 -- Schema Colegio-TP
 -- -----------------------------------------------------
 DROP SCHEMA IF EXISTS `ColegioTP` ;
-
 -- -----------------------------------------------------
 -- Schema Colegio-TP
 -- -----------------------------------------------------
-CREATE SCHEMA IF NOT EXISTS `ColegioTP` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci ;
+CREATE SCHEMA IF NOT EXISTS `ColegioTP` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 USE `ColegioTP` ;
 
@@ -35,13 +35,13 @@ CREATE TABLE IF NOT EXISTS `ColegioTP`.`usuario` (
   `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id_usuario`),
-  UNIQUE INDEX `username_UNIQUE` (`username` ASC) VISIBLE,
+  UNIQUE INDEX `username_UNIQUE` (`username` ASC),
   INDEX `idx_nombre` (`nombre`),
   INDEX `idx_apellido` (`apellido`)
 )
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
-COLLATE = utf8mb4_0900_ai_ci;
+COLLATE = utf8mb4_unicode_ci;
 
 -- -----------------------------------------------------
 -- Table `Colegio-TP`.`docente`
@@ -93,7 +93,7 @@ CREATE TABLE IF NOT EXISTS `ColegioTP`.`curso` (
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
-COLLATE = utf8mb4_0900_ai_ci;
+COLLATE = utf8mb4_unicode_ci;
 
 
 
@@ -165,7 +165,7 @@ CREATE TABLE IF NOT EXISTS `ColegioTP`.`asistencia_alumno` (
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
-COLLATE = utf8mb4_0900_ai_ci;
+COLLATE = utf8mb4_unicode_ci;
 
 
 -- -----------------------------------------------------
@@ -258,7 +258,7 @@ CREATE TABLE IF NOT EXISTS `ColegioTP`.`asistencia_docente` (
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
-COLLATE = utf8mb4_0900_ai_ci;
+COLLATE = utf8mb4_unicode_ci;
 
 
 -- -----------------------------------------------------
@@ -466,7 +466,7 @@ CREATE TABLE IF NOT EXISTS `ColegioTP`.`usuario_audit` (
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
-COLLATE = utf8mb4_0900_ai_ci;
+COLLATE = utf8mb4_unicode_ci;
 
 -- #####################################################
 -- CURSOR
@@ -539,7 +539,7 @@ CREATE TRIGGER `trg_after_usuario_update`
 AFTER UPDATE ON `usuario`
 FOR EACH ROW
 BEGIN
-  IF NOT (OLD.is_active = NEW.is_active) OR (OLD.username <> NEW.username OR OLD.password <> NEW.password OR OLD.nombre <> NEW.nombre OR OLD.apellido <> NEW.apellido) THEN
+  IF NOT (OLD.is_active = NEW.is_active) AND (OLD.username <> NEW.username OR OLD.password <> NEW.password OR OLD.nombre <> NEW.nombre OR OLD.apellido <> NEW.apellido) THEN
 	  INSERT INTO `usuario_audit` (`user_id`, `operation`, `username_old`, `password_old`, `nombre_old`, `apellido_old`, `is_active_old`, `username_new`, `password_new`, `nombre_new`, `apellido_new`, `is_active_new`, `changed_by`)
 	  VALUES (OLD.`id_usuario`, 'UPDATE', OLD.`username`, OLD.`password`, OLD.`nombre`, OLD.`apellido`, OLD.`is_active`, NEW.`username`, NEW.`password`, NEW.`nombre`, NEW.`apellido`, NEW.`is_active`, USER());
   END IF;
@@ -555,8 +555,98 @@ END
 $$;
 
 -- #####################################################
+-- FUNCIONES
+-- #####################################################
+DROP FUNCTION IF EXISTS fn_obtener_id_disponible_usuario;
+DELIMITER $$
+CREATE FUNCTION fn_obtener_id_disponible_usuario()
+RETURNS INT UNSIGNED
+BEGIN
+	DECLARE v_id_disponible INT;
+    SET v_id_disponible = (SELECT IFNULL(MAX(id_usuario)+1, 1) FROM usuario);
+	RETURN v_id_disponible;
+END
+$$;
+DROP FUNCTION IF EXISTS fn_obtener_id_disponible_alumno;
+DELIMITER $$
+CREATE FUNCTION fn_obtener_id_disponible_alumno()
+RETURNS INT UNSIGNED
+BEGIN
+	DECLARE v_id_disponible INT;
+    SET v_id_disponible = (SELECT IFNULL(MAX(id_alumno)+1, 1) FROM alumno);
+	RETURN v_id_disponible;
+END
+$$;
+DROP FUNCTION IF EXISTS fn_obtener_id_disponible_docente;
+DELIMITER $$
+CREATE FUNCTION fn_obtener_id_disponible_docente()
+RETURNS INT UNSIGNED
+BEGIN
+	DECLARE v_id_disponible INT;
+    SET v_id_disponible = (SELECT IFNULL(MAX(id_docente)+1, 1) FROM docente);
+	RETURN v_id_disponible;
+END
+$$;
+-- #####################################################
 -- PROCEDIMIENTOS
 -- #####################################################
+DROP PROCEDURE IF EXISTS sp_crear_alumno;
+-- INSERT ALUMNO
+DELIMITER //
+CREATE PROCEDURE sp_crear_alumno(
+    IN p_username VARCHAR(45),
+    IN p_password VARCHAR(255),
+    IN p_nombre VARCHAR(45),
+    IN p_apellido VARCHAR(45),
+    IN p_fec_nacimiento DATE
+)
+BEGIN
+    DECLARE v_id_usuario INT UNSIGNED;
+    DECLARE v_id_alumno INT UNSIGNED;
+    SET v_id_usuario = fn_obtener_id_disponible_usuario();
+    SET v_id_alumno = fn_obtener_id_disponible_alumno();
+	CALL sp_insertar_usuario_con_id(v_id_usuario,p_username, p_password, p_nombre, p_apellido);
+    INSERT INTO alumno(id_alumno, fec_nacimiento, fec_ingreso, id_usuario, is_active)
+    VALUES(v_id_alumno, p_fec_nacimiento, CURDATE(), v_id_usuario, 1);
+    commit;
+END //;
+
+DROP PROCEDURE IF EXISTS sp_crear_docente;
+-- INSERT PROFESOR
+DELIMITER //
+CREATE PROCEDURE sp_crear_docente(
+    IN p_username VARCHAR(45),
+    IN p_password VARCHAR(255),
+    IN p_nombre VARCHAR(45),
+    IN p_apellido VARCHAR(45),
+    IN p_fec_ingreso DATE
+)
+BEGIN
+    DECLARE v_id_usuario INT UNSIGNED;
+    DECLARE v_id_docente INT UNSIGNED;
+    SET v_id_usuario = fn_obtener_id_disponible_usuario();
+    SET v_id_docente = fn_obtener_id_disponible_docente();
+	CALL sp_insertar_usuario_con_id(v_id_usuario,p_username, p_password, p_nombre, p_apellido);
+    INSERT INTO docente(id_docente, fec_ingreso, id_usuario, is_active)
+    VALUES(v_id_docente, p_fec_ingreso, v_id_usuario, 1);
+    commit;
+END //;
+
+-- INSERT usuario con ID
+DELIMITER //
+CREATE PROCEDURE sp_insertar_usuario_con_id(
+	IN p_id_usuario INT UNSIGNED,
+    IN p_username VARCHAR(45),
+    IN p_password VARCHAR(255),
+    IN p_nombre VARCHAR(45),
+    IN p_apellido VARCHAR(45)
+)
+BEGIN
+    INSERT INTO usuario(id_usuario, username, password, nombre, apellido, is_active)
+    VALUES (p_id_usuario, p_username, p_password, p_nombre, p_apellido, 1);
+    commit;
+END //
+DELIMITER ;
 
 -- INSERT usuario
 DELIMITER //
@@ -572,7 +662,6 @@ BEGIN
     VALUES (p_username, p_password, p_nombre, p_apellido, 1);
     commit;
 END //
-
 DELIMITER ;
 
 -- UPDATE USUARIO
@@ -601,7 +690,6 @@ DELIMITER ;
 -- DELETE USUARIO
 
 DELIMITER //
-
 CREATE PROCEDURE sp_baja_logica_usuario(
     IN p_id_usuario INT
 )
@@ -613,26 +701,91 @@ BEGIN
 END //
 DELIMITER ;
 
+
+DELIMITER //
+CREATE PROCEDURE sp_insertar_materia(
+    IN p_nombre VARCHAR(45),
+    IN p_descripcion VARCHAR(255)
+)
+BEGIN
+    INSERT INTO materia(nombre, descripcion)
+    VALUES (p_nombre, p_descripcion);
+    commit;
+END //;
+
+
+DELIMITER //
+CREATE PROCEDURE sp_insertar_docente_materia(
+    IN p_id_materia INT,
+    IN p_id_docente INT,
+    IN p_id_docente_auxiliar INT
+)
+BEGIN
+    INSERT INTO docente_materia (
+        id_materia,
+        id_docente,
+        id_docente_auxiliar
+    )
+    VALUES (
+        p_id_materia,
+        p_id_docente,
+        p_id_docente_auxiliar
+    );
+    COMMIT;
+END  DELIMITER //;
+
+-- #####################################################
+-- VISTAS UTILES 
+-- #####################################################
+
+CREATE VIEW vw_antiguedad_docentes AS
+	SELECT u.nombre, u.apellido, IF(FLOOR(datediff(CURDATE(),fec_ingreso) / 365) <=0, 0, FLOOR(datediff(CURDATE(),fec_ingreso) / 365)) AS "Años antiguedad"
+	FROM docente d 
+	INNER JOIN usuario u 
+	ON d.id_usuario = u.id_usuario;
+    
+SELECT u.nombre, u.apellido, a.fec_nacimiento FROM alumno a INNER JOIN usuario u ON a.id_usuario = u.id_usuario;
+
 -- #####################################################
 -- FIN
 -- #####################################################
+
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
 
 -- PRUEBAS
-
 USE colegiotp;
 
--- INSERTAR USUARIOS
-call sp_insertar_usuario("LucasCaraballo", "12345678", "Lucas", "Caraballo");
-call sp_insertar_usuario("AgusMontalvo", "85858585", "Agustina", "Montalvo");
-call sp_insertar_usuario("LucasSain", "75757575", "Lucas", "Sain");
-call sp_insertar_usuario("VictorElias", "basededatos3", "Victor Elias", "Gomez");
-call sp_insertar_usuario("JuaniP", "123123123", "Juan", "Pardo");
-
--- call sp_baja_logica_usuario(8);
--- call sp_actualizar_usuario(8, "VictorElias", "basededatos3", "Victor Elias Test", "Gomez Ibañez");
-
--- SELECT * FROM usuario_audit;
--- SELECT * FROM usuario;
+-- INSERTAR ALUMNOS
+CALL sp_crear_alumno("LucasCaraballo", "12345678", "Lucas", "Caraballo", "2003-09-30");
+CALL sp_crear_alumno("AgusMontalvo", "85858585", "Agustina", "Montalvo", "2002-01-15");
+CALL sp_crear_alumno("LucasSain", "75757575", "Lucas", "Sain", "1997-11-21");
+CALL sp_crear_alumno("JuaniP", "123123123", "Juan", "Pardo", "2000-04-25");
+CALL sp_crear_alumno("LuisH", "987654", "Luis", "Hernandez", "2004-05-05");
+CALL sp_crear_alumno("LauraQuispe", "mypass", "Laura", "Quispe", "2002-06-30");
+CALL sp_crear_alumno("DanielPerez", "pass123", "Daniel", "Perez", "2001-07-22");
+CALL sp_crear_alumno("ElenaG", "abcdef", "Elena", "Gomez", "2000-08-19");
+CALL sp_crear_alumno("MiguelT", "passpass", "Miguel", "Torres", "2003-09-10");
+call sp_crear_alumno("MilagrosOtegui", "miliote3", "Milagros", "Otegui", "2009-02-21");
+-- INSERTAR DOCENTES
+call sp_crear_docente("VictorElias", "basededatos3", "Victor Elias", "Gomez", "2007-05-24");
+CALL sp_crear_docente("MariaLopez", "seguridad123", "Maria", "Lopez", "2011-08-15");
+CALL sp_crear_docente("JuanPerez", "password456", "Juan", "Perez", "2015-01-10");
+CALL sp_crear_docente("AnaGarcia", "contraseña789", "Ana", "Garcia", "2014-07-30");
+CALL sp_crear_docente("CarlosMartinez", "martinez321", "Carlos", "Martinez", "2004-11-25");
+CALL sp_crear_docente("LuisRodriguez", "rod12345", "Luis", "Rodriguez", "2003-03-22");
+CALL sp_crear_docente("ElenaHernandez", "hernandez654", "Elena", "Hernandez", "2009-06-18");
+CALL sp_crear_docente("MiguelDiaz", "diaz987", "Miguel", "Diaz", "2021-04-05");
+CALL sp_crear_docente("PatriciaRamos", "ramos111", "Patricia", "Ramos", "2024-09-10");
+CALL sp_crear_docente("JorgeFernandez", "fernandez222", "Jorge", "Fernandez", "2010-02-14");
+-- INSERTAR MATERIAS
+CALL sp_insertar_materia('Matemática', 'Ciencia que estudia las propiedades de los números y las operaciones elementales.');
+CALL sp_insertar_materia('Lengua y literatura', 'Estudio de la lengua y sus manifestaciones literarias.');
+CALL sp_insertar_materia('Lengua adicional', 'Estudio de una lengua adicional diferente al idioma principal.');
+CALL sp_insertar_materia('Educación física', 'Actividades físicas y deportivas en el ámbito educativo.');
+CALL sp_insertar_materia('Biología', 'Estudio de los seres vivos y sus procesos vitales.');
+CALL sp_insertar_materia('Historia', 'Estudio de los acontecimientos del pasado.');
+CALL sp_insertar_materia('Geografía', 'Estudio de la superficie terrestre y la distribución espacial de fenómenos humanos y naturales.');
+CALL sp_insertar_materia('Form. Ética y Ciudadana', 'Formación en valores éticos y conocimiento de la ciudadanía.');
+CALL sp_insertar_materia('Educación Tecnológica', 'Estudio de las tecnologías y su aplicación en la sociedad.');
