@@ -26,14 +26,14 @@ DROP TABLE IF EXISTS `ColegioTP`.`usuario` ;
 
 -- Tabla usuario
 CREATE TABLE IF NOT EXISTS `ColegioTP`.`usuario` (
-  `id_usuario` INT NOT NULL AUTO_INCREMENT,
-  `username` VARCHAR(45) NOT NULL,
-  `password` VARCHAR(255) NOT NULL,  -- Aumentar tamaño para hashes
-  `nombre` VARCHAR(45) NOT NULL,
-  `apellido` VARCHAR(45) NOT NULL,
-  `is_active` TINYINT NOT NULL,
-  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    `id_usuario` INT NOT NULL AUTO_INCREMENT,
+    `username` VARCHAR(45) NOT NULL,
+    `password` VARCHAR(255) NOT NULL,  -- Aumentar tamaño para hashes
+    `nombre` VARCHAR(45) NOT NULL,
+    `apellido` VARCHAR(45) NOT NULL,
+    `is_active` TINYINT NOT NULL,
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id_usuario`),
   UNIQUE INDEX `username_UNIQUE` (`username` ASC),
   INDEX `idx_nombre` (`nombre`),
@@ -41,7 +41,7 @@ CREATE TABLE IF NOT EXISTS `ColegioTP`.`usuario` (
 )
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
-COLLATE = utf8mb4_unicode_ci;
+    COLLATE = utf8mb4_unicode_ci;
 
 -- -----------------------------------------------------
 -- Table `Colegio-TP`.`docente`
@@ -50,13 +50,13 @@ DROP TABLE IF EXISTS `ColegioTP`.`docente` ;
 
 -- Crear tabla docente
 CREATE TABLE IF NOT EXISTS `ColegioTP`.`docente` (
-  `id_docente` INT NOT NULL AUTO_INCREMENT,
-  `id_usuario` INT NOT NULL,
-  `fec_ingreso` DATE NOT NULL,
-  `fec_salida` DATE NULL,
-  `is_active` TINYINT NOT NULL,
-  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    `id_docente` INT NOT NULL AUTO_INCREMENT,
+    `id_usuario` INT NOT NULL,
+    `fec_ingreso` DATE NOT NULL,
+    `fec_salida` DATE NULL,
+    `is_active` TINYINT NOT NULL,
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id_docente`),
   CONSTRAINT `fk_docente_usuario1`
     FOREIGN KEY (`id_usuario`)
@@ -73,13 +73,13 @@ DROP TABLE IF EXISTS `ColegioTP`.`curso` ;
 
 -- Crear tabla curso
 CREATE TABLE IF NOT EXISTS `ColegioTP`.`curso` (
-  `id_curso` INT NOT NULL AUTO_INCREMENT,
-  `nombre` VARCHAR(20) NOT NULL,
-  `cant_alumnos` INT NOT NULL,
-  `id_tutor` INT NOT NULL,
-  `id_preceptor` INT NOT NULL,
-  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    `id_curso` INT NOT NULL AUTO_INCREMENT,
+    `nombre` VARCHAR(20) NOT NULL,
+    `cant_alumnos` INT NOT NULL,
+    `id_tutor` INT NOT NULL,
+    `id_preceptor` INT NOT NULL,
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id_curso`),
   CONSTRAINT `fk_curso_docente1`
     FOREIGN KEY (`id_tutor`)
@@ -93,7 +93,7 @@ CREATE TABLE IF NOT EXISTS `ColegioTP`.`curso` (
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
-COLLATE = utf8mb4_unicode_ci;
+    COLLATE = utf8mb4_unicode_ci;
 
 
 
@@ -104,14 +104,14 @@ DROP TABLE IF EXISTS `ColegioTP`.`alumno` ;
 
 -- Crear tabla alumno
 CREATE TABLE IF NOT EXISTS `ColegioTP`.`alumno` (
-  `id_alumno` INT NOT NULL AUTO_INCREMENT,
-  `fec_nacimiento` DATE NOT NULL,
-  `fec_ingreso` DATE NOT NULL,
-  `fec_salida` DATE NULL,
-  `id_usuario` INT NOT NULL,
-  `is_active` TINYINT NOT NULL,
-  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    `id_alumno` INT NOT NULL AUTO_INCREMENT,
+    `fec_nacimiento` DATE NOT NULL,
+    `fec_ingreso` DATE NOT NULL,
+    `fec_salida` DATE NULL,
+    `id_usuario` INT NOT NULL,
+    `is_active` TINYINT NOT NULL,
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id_alumno`),
   CONSTRAINT `fk_alumno_usuario1`
     FOREIGN KEY (`id_usuario`)
@@ -128,11 +128,11 @@ DROP TABLE IF EXISTS `ColegioTP`.`alumno_curso` ;
 
 -- Crear tabla alumno_curso
 CREATE TABLE IF NOT EXISTS `ColegioTP`.`alumno_curso` (
-  `id_alumno_curso` INT NOT NULL AUTO_INCREMENT,
-  `id_curso` INT NOT NULL,
-  `id_alumno` INT NOT NULL,
-  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    `id_alumno_curso` INT NOT NULL AUTO_INCREMENT,
+    `id_curso` INT NOT NULL,
+    `id_alumno` INT NOT NULL,
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id_alumno_curso`),
   CONSTRAINT `fk_alumno_curso_curso`
     FOREIGN KEY (`id_curso`)
@@ -153,10 +153,10 @@ ENGINE = InnoDB;
 DROP TABLE IF EXISTS `ColegioTP`.`asistencia_alumno` ;
 
 CREATE TABLE IF NOT EXISTS `ColegioTP`.`asistencia_alumno` (
-  `id_asistencia_alumno` INT NOT NULL AUTO_INCREMENT,
-  `fecha` DATE NOT NULL,
-  `id_alumno` INT NOT NULL,
-  `is_presente` TINYINT NOT NULL,
+    `id_asistencia_alumno` INT NOT NULL AUTO_INCREMENT,
+    `fecha` DATE NOT NULL,
+    `id_alumno` INT NOT NULL,
+    `is_presente` TINYINT NOT NULL,
   PRIMARY KEY (`id_asistencia_alumno`),
   CONSTRAINT `fk_asistencia_alumno_alumno1`
     FOREIGN KEY (`id_alumno`)
@@ -165,7 +165,7 @@ CREATE TABLE IF NOT EXISTS `ColegioTP`.`asistencia_alumno` (
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
-COLLATE = utf8mb4_unicode_ci;
+    COLLATE = utf8mb4_unicode_ci;
 
 
 -- -----------------------------------------------------
@@ -174,8 +174,8 @@ COLLATE = utf8mb4_unicode_ci;
 DROP TABLE IF EXISTS `ColegioTP`.`rol` ;
 
 CREATE TABLE IF NOT EXISTS `ColegioTP`.`rol` (
-  `id_rol` INT NOT NULL AUTO_INCREMENT,
-  `nombre` VARCHAR(20) NOT NULL,
+    `id_rol` INT NOT NULL AUTO_INCREMENT,
+    `nombre` VARCHAR(20) NOT NULL,
   PRIMARY KEY (`id_rol`))
 ENGINE = InnoDB;
 
@@ -186,10 +186,10 @@ ENGINE = InnoDB;
 DROP TABLE IF EXISTS `ColegioTP`.`usuario_rol` ;
 
 CREATE TABLE IF NOT EXISTS `ColegioTP`.`usuario_rol` (
-  `id_usuario_rol` INT NOT NULL AUTO_INCREMENT,
-  `id_usuario` INT NOT NULL,
-  `id_rol` INT NOT NULL,
-  `is_active` TINYINT NOT NULL DEFAULT 0,
+    `id_usuario_rol` INT NOT NULL AUTO_INCREMENT,
+    `id_usuario` INT NOT NULL,
+    `id_rol` INT NOT NULL,
+    `is_active` TINYINT NOT NULL DEFAULT 0,
   PRIMARY KEY (`id_usuario_rol`),
   CONSTRAINT `fk_usuario_rol_usuario1`
     FOREIGN KEY (`id_usuario`)
@@ -210,9 +210,9 @@ ENGINE = InnoDB;
 DROP TABLE IF EXISTS `ColegioTP`.`cargo` ;
 
 CREATE TABLE IF NOT EXISTS `ColegioTP`.`cargo` (
-  `id_cargo` INT NOT NULL AUTO_INCREMENT,
-  `nombre` VARCHAR(20) NOT NULL,
-  `descripción` VARCHAR(100) NOT NULL,
+    `id_cargo` INT NOT NULL AUTO_INCREMENT,
+    `nombre` VARCHAR(20) NOT NULL,
+    `descripción` VARCHAR(100) NOT NULL,
   PRIMARY KEY (`id_cargo`))
 ENGINE = InnoDB;
 
@@ -223,9 +223,9 @@ ENGINE = InnoDB;
 DROP TABLE IF EXISTS `ColegioTP`.`docente_cargo` ;
 
 CREATE TABLE IF NOT EXISTS `ColegioTP`.`docente_cargo` (
-  `id_docente_cargo` INT NOT NULL AUTO_INCREMENT,
-  `id_docente` INT NOT NULL,
-  `id_cargo` INT NOT NULL,
+    `id_docente_cargo` INT NOT NULL AUTO_INCREMENT,
+    `id_docente` INT NOT NULL,
+    `id_cargo` INT NOT NULL,
   PRIMARY KEY (`id_docente_cargo`),
   CONSTRAINT `fk_docente_cargo_docente1`
     FOREIGN KEY (`id_docente`)
@@ -246,10 +246,10 @@ ENGINE = InnoDB;
 DROP TABLE IF EXISTS `ColegioTP`.`asistencia_docente` ;
 
 CREATE TABLE IF NOT EXISTS `ColegioTP`.`asistencia_docente` (
-  `id_asistencia_docente` INT NOT NULL AUTO_INCREMENT,
-  `fecha` DATE NOT NULL,
-  `is_presente` TINYINT NOT NULL,
-  `id_docente` INT NOT NULL,
+    `id_asistencia_docente` INT NOT NULL AUTO_INCREMENT,
+    `fecha` DATE NOT NULL,
+    `is_presente` TINYINT NOT NULL,
+    `id_docente` INT NOT NULL,
   PRIMARY KEY (`id_asistencia_docente`),
   CONSTRAINT `fk_asistencia_docente_docente1`
     FOREIGN KEY (`id_docente`)
@@ -258,7 +258,7 @@ CREATE TABLE IF NOT EXISTS `ColegioTP`.`asistencia_docente` (
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
-COLLATE = utf8mb4_unicode_ci;
+    COLLATE = utf8mb4_unicode_ci;
 
 
 -- -----------------------------------------------------
@@ -267,9 +267,9 @@ COLLATE = utf8mb4_unicode_ci;
 DROP TABLE IF EXISTS `ColegioTP`.`materia` ;
 
 CREATE TABLE IF NOT EXISTS `ColegioTP`.`materia` (
-  `id_materia` INT NOT NULL AUTO_INCREMENT,
-  `nombre` VARCHAR(45) NOT NULL,
-  `descripcion` VARCHAR(255) NOT NULL,
+    `id_materia` INT NOT NULL AUTO_INCREMENT,
+    `nombre` VARCHAR(45) NOT NULL,
+    `descripcion` VARCHAR(255) NOT NULL,
   PRIMARY KEY (`id_materia`))
 ENGINE = InnoDB;
 
@@ -280,9 +280,9 @@ ENGINE = InnoDB;
 DROP TABLE IF EXISTS `ColegioTP`.`curso_materia` ;
 
 CREATE TABLE IF NOT EXISTS `ColegioTP`.`curso_materia` (
-  `id_curso_materia` INT NOT NULL AUTO_INCREMENT,
-  `id_curso` INT NOT NULL,
-  `id_materia` INT NOT NULL,
+    `id_curso_materia` INT NOT NULL AUTO_INCREMENT,
+    `id_curso` INT NOT NULL,
+    `id_materia` INT NOT NULL,
   PRIMARY KEY (`id_curso_materia`),
   CONSTRAINT `fk_curso_materia_curso1`
     FOREIGN KEY (`id_curso`)
@@ -303,9 +303,9 @@ ENGINE = InnoDB;
 DROP TABLE IF EXISTS `ColegioTP`.`tema` ;
 
 CREATE TABLE IF NOT EXISTS `ColegioTP`.`tema` (
-  `id_tema` INT NOT NULL AUTO_INCREMENT,
-  `nombre` VARCHAR(45) NOT NULL,
-  `descripción` VARCHAR(100) NOT NULL,
+    `id_tema` INT NOT NULL AUTO_INCREMENT,
+    `nombre` VARCHAR(45) NOT NULL,
+    `descripción` VARCHAR(100) NOT NULL,
   PRIMARY KEY (`id_tema`))
 ENGINE = InnoDB;
 
@@ -316,9 +316,9 @@ ENGINE = InnoDB;
 DROP TABLE IF EXISTS `ColegioTP`.`materia_tema` ;
 
 CREATE TABLE IF NOT EXISTS `ColegioTP`.`materia_tema` (
-  `id_materia_tema` INT NOT NULL AUTO_INCREMENT,
-  `id_materia` INT NOT NULL,
-  `id_tema` INT NOT NULL,
+    `id_materia_tema` INT NOT NULL AUTO_INCREMENT,
+    `id_materia` INT NOT NULL,
+    `id_tema` INT NOT NULL,
   PRIMARY KEY (`id_materia_tema`),
   CONSTRAINT `fk_materia_tema_materia1`
     FOREIGN KEY (`id_materia`)
@@ -339,11 +339,11 @@ ENGINE = InnoDB;
 DROP TABLE IF EXISTS `ColegioTP`.`libro` ;
 
 CREATE TABLE IF NOT EXISTS `ColegioTP`.`libro` (
-  `id_libro` INT NOT NULL AUTO_INCREMENT,
-  `titulo` VARCHAR(45) NOT NULL,
-  `autor` VARCHAR(45) NOT NULL,
-  `imagen_referencia` VARCHAR(45) NOT NULL,
-  `editorial` VARCHAR(45) NULL,
+    `id_libro` INT NOT NULL AUTO_INCREMENT,
+    `titulo` VARCHAR(45) NOT NULL,
+    `autor` VARCHAR(45) NOT NULL,
+    `imagen_referencia` VARCHAR(45) NOT NULL,
+    `editorial` VARCHAR(45) NULL,
   PRIMARY KEY (`id_libro`))
 ENGINE = InnoDB;
 
@@ -354,9 +354,9 @@ ENGINE = InnoDB;
 DROP TABLE IF EXISTS `ColegioTP`.`materia_libro` ;
 
 CREATE TABLE IF NOT EXISTS `ColegioTP`.`materia_libro` (
-  `id_materia_libro` INT NOT NULL AUTO_INCREMENT,
-  `id_materia` INT NOT NULL,
-  `id_libro` INT NOT NULL,
+    `id_materia_libro` INT NOT NULL AUTO_INCREMENT,
+    `id_materia` INT NOT NULL,
+    `id_libro` INT NOT NULL,
   PRIMARY KEY (`id_materia_libro`),
   CONSTRAINT `fk_materia_libro_materia1`
     FOREIGN KEY (`id_materia`)
@@ -377,10 +377,10 @@ ENGINE = InnoDB;
 DROP TABLE IF EXISTS `ColegioTP`.`docente_materia` ;
 
 CREATE TABLE IF NOT EXISTS `ColegioTP`.`docente_materia` (
-  `id_docente_materia` INT NOT NULL AUTO_INCREMENT,
-  `id_materia` INT NOT NULL,
-  `id_docente` INT NOT NULL,
-  `id_docente_auxiliar` INT NULL,
+    `id_docente_materia` INT NOT NULL AUTO_INCREMENT,
+    `id_materia` INT NOT NULL,
+    `id_docente` INT NOT NULL,
+    `id_docente_auxiliar` INT NULL,
   PRIMARY KEY (`id_docente_materia`),
   CONSTRAINT `fk_docente_materia_materia1`
     FOREIGN KEY (`id_materia`)
@@ -406,8 +406,8 @@ ENGINE = InnoDB;
 DROP TABLE IF EXISTS `ColegioTP`.`permiso` ;
 
 CREATE TABLE IF NOT EXISTS `ColegioTP`.`permiso` (
-  `id_permiso` INT NOT NULL AUTO_INCREMENT,
-  `nombre` VARCHAR(45) NOT NULL,
+    `id_permiso` INT NOT NULL AUTO_INCREMENT,
+    `nombre` VARCHAR(45) NOT NULL,
   PRIMARY KEY (`id_permiso`))
 ENGINE = InnoDB;
 
@@ -418,9 +418,9 @@ ENGINE = InnoDB;
 DROP TABLE IF EXISTS `ColegioTP`.`rol_has_permiso` ;
 
 CREATE TABLE IF NOT EXISTS `ColegioTP`.`rol_has_permiso` (
-  `id_rol_has_permiso` INT NOT NULL AUTO_INCREMENT,
-  `id_rol` INT NOT NULL,
-  `id_permiso` INT NOT NULL,
+    `id_rol_has_permiso` INT NOT NULL AUTO_INCREMENT,
+    `id_rol` INT NOT NULL,
+    `id_permiso` INT NOT NULL,
   PRIMARY KEY (`id_rol_has_permiso`),
   CONSTRAINT `fk_rol_has_permiso_permiso1`
     FOREIGN KEY (`id_permiso`)
@@ -442,21 +442,21 @@ DROP TABLE IF EXISTS `ColegioTP`.`usuario_audit` ;
 
 -- Crear tabla de auditoría para usuario
 CREATE TABLE IF NOT EXISTS `ColegioTP`.`usuario_audit` (
-  `audit_id` INT NOT NULL AUTO_INCREMENT,
-  `user_id` INT NOT NULL,
-  `operation` ENUM('INSERT', 'UPDATE', 'DELETE') NOT NULL,
-  `username_old` VARCHAR(45),
-  `password_old` VARCHAR(255),
-  `nombre_old` VARCHAR(45),
-  `apellido_old` VARCHAR(45),
-  `is_active_old` TINYINT,
-  `username_new` VARCHAR(45),
-  `password_new` VARCHAR(255),
-  `nombre_new` VARCHAR(45),
-  `apellido_new` VARCHAR(45),
-  `is_active_new` TINYINT,
-  `changed_by` VARCHAR(25),
-  `changed_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    `audit_id` INT NOT NULL AUTO_INCREMENT,
+    `user_id` INT NOT NULL,
+    `operation` ENUM('INSERT', 'UPDATE', 'DELETE') NOT NULL,
+    `username_old` VARCHAR(45),
+    `password_old` VARCHAR(255),
+    `nombre_old` VARCHAR(45),
+    `apellido_old` VARCHAR(45),
+    `is_active_old` TINYINT,
+    `username_new` VARCHAR(45),
+    `password_new` VARCHAR(255),
+    `nombre_new` VARCHAR(45),
+    `apellido_new` VARCHAR(45),
+    `is_active_new` TINYINT,
+    `changed_by` VARCHAR(25),
+    `changed_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`audit_id`),
   INDEX `idx_user_id` (`user_id` ASC),
   CONSTRAINT `fk_usuario_audit_usuario1`
@@ -466,11 +466,38 @@ CREATE TABLE IF NOT EXISTS `ColegioTP`.`usuario_audit` (
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
-COLLATE = utf8mb4_unicode_ci;
+    COLLATE = utf8mb4_unicode_ci;
+
+
+-- -----------------------------------------------------
+-- Table `calificaciones`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `calificacion` ;
+
+CREATE TABLE IF NOT EXISTS `calificacion` (
+    `id_calificacion` INT NOT NULL AUTO_INCREMENT,
+    `calificacion` DECIMAL(5,2) NOT NULL,
+    `id_materia` INT NOT NULL,
+    `id_alumno` INT NOT NULL,
+  PRIMARY KEY (`id_calificacion`),
+  CONSTRAINT `fk_calificaciones_materia1`
+    FOREIGN KEY (`id_materia`)
+    REFERENCES `materia` (`id_materia`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_calificaciones_alumno1`
+    FOREIGN KEY (`id_alumno`)
+    REFERENCES `alumno` (`id_alumno`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION
+) ENGINE = InnoDB;
+
 
 -- #####################################################
 -- CURSOR
 -- #####################################################
+
+DROP PROCEDURE IF EXISTS calcular_promedio_notas_alumno
 
 DELIMITER $$
 
@@ -480,77 +507,77 @@ CREATE PROCEDURE calcular_promedio_notas_alumno(
 BEGIN
     DECLARE done INT DEFAULT FALSE;
     DECLARE v_id_materia INT;
-    DECLARE v_nota FLOAT;
+    DECLARE v_calificacion FLOAT;
     DECLARE v_promedio_total FLOAT DEFAULT 0;
     DECLARE v_contador INT DEFAULT 0;
 
     -- Cursor para obtener las materias en las que está inscrito el alumno
-    DECLARE cur_materias CURSOR FOR 
-        SELECT id_materia FROM nota WHERE id_alumno = p_id_alumno;
+    DECLARE cur_materias CURSOR FOR
+    SELECT id_materia FROM calificacion WHERE id_alumno = p_id_alumno;
     DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
 
     OPEN cur_materias;
 
     read_loop: LOOP
-        FETCH cur_materias INTO v_id_materia;
-        IF done THEN
-            LEAVE read_loop;
-        END IF;
+    FETCH cur_materias INTO v_id_materia;
+    IF done THEN
+    LEAVE read_loop;
+END IF;
 
-        -- Calcular promedio de notas para cada materia
-        SELECT AVG(nota) INTO v_nota FROM nota WHERE id_alumno = p_id_alumno AND id_materia = v_id_materia;
-        
-        -- Acumular promedio de notas para el promedio total
-        SET v_promedio_total = v_promedio_total + v_nota;
-        SET v_contador = v_contador + 1;
-    END LOOP;
+-- Calcular promedio de notas para cada materia
+SELECT AVG(calificacion) INTO v_calificacion FROM calificacion WHERE id_alumno = p_id_alumno AND id_materia = v_id_materia;
 
-    CLOSE cur_materias;
+-- Acumular promedio de notas para el promedio total
+SET v_promedio_total = v_promedio_total + v_calificacion;
+SET v_contador = v_contador + 1;
+END LOOP;
 
-    -- Calcular promedio total
-    IF v_contador > 0 THEN
-        SET v_promedio_total = v_promedio_total / v_contador;
-    END IF;
+CLOSE cur_materias;
 
-    -- Mostrar resultado
-    SELECT v_promedio_total AS promedio_total;
+-- Calcular promedio total
+IF v_contador > 0 THEN
+SET v_promedio_total = v_promedio_total / v_contador;
+END IF;
+
+-- Mostrar resultado
+SELECT v_promedio_total AS promedio_total;
 END
 
 $$DELIMITER ;
 
 -- #####################################################
--- TRIGGERS 
+-- TRIGGERS
 -- #####################################################
 
 DELIMITER $$
 -- Trigger para INSERT en usuario
 CREATE TRIGGER `trg_after_usuario_insert`
-AFTER INSERT ON `usuario`
-FOR EACH ROW
+    AFTER INSERT ON `usuario`
+    FOR EACH ROW
 BEGIN
-	-- usar NEW
-  INSERT INTO `usuario_audit` VALUES (NULL, NEW.id_usuario, 'INSERT', NULL, NULL, NULL, NULL, NULL, NEW.`username`, NEW.`password`, NEW.`nombre`, NEW.`apellido`, NEW.`is_active`, USER(), CURRENT_TIMESTAMP());
+    -- usar NEW
+    INSERT INTO `usuario_audit` VALUES (NULL, NEW.id_usuario, 'INSERT', NULL, NULL, NULL, NULL, NULL, NEW.`username`, NEW.`password`, NEW.`nombre`, NEW.`apellido`, NEW.`is_active`, USER(), CURRENT_TIMESTAMP());
 END;
 $$;
 
 DELIMITER $$
 -- Trigger para UPDATE en usuario
 CREATE TRIGGER `trg_after_usuario_update`
-AFTER UPDATE ON `usuario`
-FOR EACH ROW
+    AFTER UPDATE ON `usuario`
+    FOR EACH ROW
 BEGIN
-  IF NOT (OLD.is_active = NEW.is_active) AND (OLD.username <> NEW.username OR OLD.password <> NEW.password OR OLD.nombre <> NEW.nombre OR OLD.apellido <> NEW.apellido) THEN
-	  INSERT INTO `usuario_audit` (`user_id`, `operation`, `username_old`, `password_old`, `nombre_old`, `apellido_old`, `is_active_old`, `username_new`, `password_new`, `nombre_new`, `apellido_new`, `is_active_new`, `changed_by`)
-	  VALUES (OLD.`id_usuario`, 'UPDATE', OLD.`username`, OLD.`password`, OLD.`nombre`, OLD.`apellido`, OLD.`is_active`, NEW.`username`, NEW.`password`, NEW.`nombre`, NEW.`apellido`, NEW.`is_active`, USER());
-  END IF;
-  
-  IF OLD.is_active = 1 AND NEW.is_active = 0 THEN
-	  INSERT INTO `usuario_audit` (`user_id`, `operation`, `username_old`, `password_old`, `nombre_old`, `apellido_old`, `is_active_old`, `username_new`, `password_new`, `nombre_new`, `apellido_new`, `is_active_new`, `changed_by`)
-	  VALUES (OLD.`id_usuario`, 'DELETE', OLD.`username`, OLD.`password`, OLD.`nombre`, OLD.`apellido`, OLD.`is_active`, NEW.`username`, NEW.`password`, NEW.`nombre`, NEW.`apellido`, NEW.`is_active`, USER());
-  ELSEIF OLD.is_active = 0 AND NEW.is_active = 1 THEN
-	  INSERT INTO `usuario_audit` (`user_id`, `operation`, `username_old`, `password_old`, `nombre_old`, `apellido_old`, `is_active_old`, `username_new`, `password_new`, `nombre_new`, `apellido_new`, `is_active_new`, `changed_by`)
-	  VALUES (OLD.`id_usuario`, 'ACTIVATE', OLD.`username`, OLD.`password`, OLD.`nombre`, OLD.`apellido`, OLD.`is_active`, NEW.`username`, NEW.`password`, NEW.`nombre`, NEW.`apellido`, NEW.`is_active`, USER());
-  END IF;
+    IF NOT (OLD.is_active = NEW.is_active) AND (OLD.username <> NEW.username OR OLD.password <> NEW.password OR OLD.nombre <> NEW.nombre OR OLD.apellido <> NEW.apellido) THEN
+        INSERT INTO `usuario_audit` (`user_id`, `operation`, `username_old`, `password_old`, `nombre_old`, `apellido_old`, `is_active_old`, `username_new`, `password_new`, `nombre_new`, `apellido_new`, `is_active_new`, `changed_by`)
+        VALUES (OLD.`id_usuario`, 'UPDATE', OLD.`username`, OLD.`password`, OLD.`nombre`, OLD.`apellido`, OLD.`is_active`, NEW.`username`, NEW.`password`, NEW.`nombre`, NEW.`apellido`, NEW.`is_active`, USER());
+    END IF;
+
+    IF OLD.is_active = 1 AND NEW.is_active = 0 THEN
+        INSERT INTO `usuario_audit` (`user_id`, `operation`, `username_old`, `password_old`, `nombre_old`, `apellido_old`, `is_active_old`, `username_new`, `password_new`, `nombre_new`, `apellido_new`, `is_active_new`, `changed_by`)
+        VALUES (OLD.`id_usuario`, 'DELETE', OLD.`username`, OLD.`password`, OLD.`nombre`, OLD.`apellido`, OLD.`is_active`, NEW.`username`, NEW.`password`, NEW.`nombre`, NEW.`apellido`, NEW.`is_active`, USER());
+        ELSEIF OLD.is_active = 0 AND NEW.is_active = 1 THEN
+        INSERT INTO `usuario_audit` (`user_id`, `operation`, `username_old`, `password_old`, `nombre_old`, `apellido_old`, `is_active_old`, `username_new`, `password_new`, `nombre_new`, `apellido_new`, `is_active_new`, `changed_by`)
+        VALUES (OLD.`id_usuario`, 'ACTIVATE', OLD.`username`, OLD.`password`, OLD.`nombre`, OLD.`apellido`, OLD.`is_active`, NEW.`username`, NEW.`password`, NEW.`nombre`, NEW.`apellido`, NEW.`is_active`, USER());
+    END IF;
 END
 $$;
 
@@ -560,31 +587,31 @@ $$;
 DROP FUNCTION IF EXISTS fn_obtener_id_disponible_usuario;
 DELIMITER $$
 CREATE FUNCTION fn_obtener_id_disponible_usuario()
-RETURNS INT UNSIGNED
+    RETURNS INT UNSIGNED
 BEGIN
-	DECLARE v_id_disponible INT;
+    DECLARE v_id_disponible INT;
     SET v_id_disponible = (SELECT IFNULL(MAX(id_usuario)+1, 1) FROM usuario);
-	RETURN v_id_disponible;
+    RETURN v_id_disponible;
 END
 $$;
 DROP FUNCTION IF EXISTS fn_obtener_id_disponible_alumno;
 DELIMITER $$
 CREATE FUNCTION fn_obtener_id_disponible_alumno()
-RETURNS INT UNSIGNED
+    RETURNS INT UNSIGNED
 BEGIN
-	DECLARE v_id_disponible INT;
+    DECLARE v_id_disponible INT;
     SET v_id_disponible = (SELECT IFNULL(MAX(id_alumno)+1, 1) FROM alumno);
-	RETURN v_id_disponible;
+    RETURN v_id_disponible;
 END
 $$;
 DROP FUNCTION IF EXISTS fn_obtener_id_disponible_docente;
 DELIMITER $$
 CREATE FUNCTION fn_obtener_id_disponible_docente()
-RETURNS INT UNSIGNED
+    RETURNS INT UNSIGNED
 BEGIN
-	DECLARE v_id_disponible INT;
+    DECLARE v_id_disponible INT;
     SET v_id_disponible = (SELECT IFNULL(MAX(id_docente)+1, 1) FROM docente);
-	RETURN v_id_disponible;
+    RETURN v_id_disponible;
 END
 $$;
 -- #####################################################
@@ -605,7 +632,7 @@ BEGIN
     DECLARE v_id_alumno INT UNSIGNED;
     SET v_id_usuario = fn_obtener_id_disponible_usuario();
     SET v_id_alumno = fn_obtener_id_disponible_alumno();
-	CALL sp_insertar_usuario_con_id(v_id_usuario,p_username, p_password, p_nombre, p_apellido);
+    CALL sp_insertar_usuario_con_id(v_id_usuario,p_username, p_password, p_nombre, p_apellido);
     INSERT INTO alumno(id_alumno, fec_nacimiento, fec_ingreso, id_usuario, is_active)
     VALUES(v_id_alumno, p_fec_nacimiento, CURDATE(), v_id_usuario, 1);
     commit;
@@ -626,7 +653,7 @@ BEGIN
     DECLARE v_id_docente INT UNSIGNED;
     SET v_id_usuario = fn_obtener_id_disponible_usuario();
     SET v_id_docente = fn_obtener_id_disponible_docente();
-	CALL sp_insertar_usuario_con_id(v_id_usuario,p_username, p_password, p_nombre, p_apellido);
+    CALL sp_insertar_usuario_con_id(v_id_usuario,p_username, p_password, p_nombre, p_apellido);
     INSERT INTO docente(id_docente, fec_ingreso, id_usuario, is_active)
     VALUES(v_id_docente, p_fec_ingreso, v_id_usuario, 1);
     commit;
@@ -635,7 +662,7 @@ END //;
 -- INSERT usuario con ID
 DELIMITER //
 CREATE PROCEDURE sp_insertar_usuario_con_id(
-	IN p_id_usuario INT UNSIGNED,
+    IN p_id_usuario INT UNSIGNED,
     IN p_username VARCHAR(45),
     IN p_password VARCHAR(255),
     IN p_nombre VARCHAR(45),
@@ -727,23 +754,23 @@ BEGIN
         id_docente_auxiliar
     )
     VALUES (
-        p_id_materia,
-        p_id_docente,
-        p_id_docente_auxiliar
-    );
+               p_id_materia,
+               p_id_docente,
+               p_id_docente_auxiliar
+           );
     COMMIT;
 END  DELIMITER //;
 
 -- #####################################################
--- VISTAS UTILES 
+-- VISTAS UTILES
 -- #####################################################
 
 CREATE VIEW vw_antiguedad_docentes AS
-	SELECT u.nombre, u.apellido, IF(FLOOR(datediff(CURDATE(),fec_ingreso) / 365) <=0, 0, FLOOR(datediff(CURDATE(),fec_ingreso) / 365)) AS "Años antiguedad"
-	FROM docente d 
-	INNER JOIN usuario u 
-	ON d.id_usuario = u.id_usuario;
-    
+SELECT u.nombre, u.apellido, IF(FLOOR(datediff(CURDATE(),fec_ingreso) / 365) <=0, 0, FLOOR(datediff(CURDATE(),fec_ingreso) / 365)) AS "Años antiguedad"
+FROM docente d
+         INNER JOIN usuario u
+                    ON d.id_usuario = u.id_usuario;
+
 SELECT u.nombre, u.apellido, a.fec_nacimiento FROM alumno a INNER JOIN usuario u ON a.id_usuario = u.id_usuario;
 
 -- #####################################################
@@ -756,6 +783,7 @@ SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
 
 -- PRUEBAS
 USE colegiotp;
+
 
 -- INSERTAR ALUMNOS
 CALL sp_crear_alumno("LucasCaraballo", "12345678", "Lucas", "Caraballo", "2003-09-30");
@@ -789,3 +817,20 @@ CALL sp_insertar_materia('Historia', 'Estudio de los acontecimientos del pasado.
 CALL sp_insertar_materia('Geografía', 'Estudio de la superficie terrestre y la distribución espacial de fenómenos humanos y naturales.');
 CALL sp_insertar_materia('Form. Ética y Ciudadana', 'Formación en valores éticos y conocimiento de la ciudadanía.');
 CALL sp_insertar_materia('Educación Tecnológica', 'Estudio de las tecnologías y su aplicación en la sociedad.');
+
+-- Notas
+
+INSERT into calificacion(calificacion, id_materia, id_alumno)
+values (90,1,10);
+INSERT into calificacion(calificacion, id_materia, id_alumno)
+values (80,1,10);
+INSERT into calificacion(calificacion, id_materia, id_alumno)
+values (80,1,10);
+INSERT into calificacion(calificacion, id_materia, id_alumno)
+values (70,1,10);
+INSERT into calificacion(calificacion, id_materia, id_alumno)
+values (50,1,10);
+INSERT into calificacion(calificacion, id_materia, id_alumno)
+values (100,1,10);
+
+CALL calcular_promedio_notas_alumno(10);
