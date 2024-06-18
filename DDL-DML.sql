@@ -497,7 +497,7 @@ CREATE TABLE IF NOT EXISTS `calificacion` (
 -- CURSOR
 -- #####################################################
 
-DROP PROCEDURE IF EXISTS calcular_promedio_notas_alumno
+DROP PROCEDURE IF EXISTS calcular_promedio_notas_alumno;
 
 DELIMITER $$
 
@@ -508,42 +508,34 @@ BEGIN
     DECLARE done INT DEFAULT FALSE;
     DECLARE v_id_materia INT;
     DECLARE v_calificacion FLOAT;
-    DECLARE v_promedio_total FLOAT DEFAULT 0;
-    DECLARE v_contador INT DEFAULT 0;
 
-    -- Cursor para obtener las materias en las que está inscrito el alumno
+    -- Cursor para obtener las materias en las que el alumno tiene calificaciones registradas
     DECLARE cur_materias CURSOR FOR
-    SELECT id_materia FROM calificacion WHERE id_alumno = p_id_alumno;
+        SELECT DISTINCT id_materia FROM calificacion WHERE id_alumno = p_id_alumno;
     DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
 
     OPEN cur_materias;
 
     read_loop: LOOP
-    FETCH cur_materias INTO v_id_materia;
-    IF done THEN
-    LEAVE read_loop;
-END IF;
+        FETCH cur_materias INTO v_id_materia;
+        IF done THEN
+            LEAVE read_loop;
+        END IF;
 
--- Calcular promedio de notas para cada materia
-SELECT AVG(calificacion) INTO v_calificacion FROM calificacion WHERE id_alumno = p_id_alumno AND id_materia = v_id_materia;
+        -- Calcular promedio de notas para cada materia
+        SELECT AVG(calificacion) INTO v_calificacion
+        FROM calificacion
+        WHERE id_alumno = p_id_alumno AND id_materia = v_id_materia;
 
--- Acumular promedio de notas para el promedio total
-SET v_promedio_total = v_promedio_total + v_calificacion;
-SET v_contador = v_contador + 1;
-END LOOP;
+        -- Mostrar resultado para cada materia
+        SELECT v_id_materia AS materia, v_calificacion AS promedio;
+    END LOOP;
 
-CLOSE cur_materias;
+    CLOSE cur_materias;
+END $$
 
--- Calcular promedio total
-IF v_contador > 0 THEN
-SET v_promedio_total = v_promedio_total / v_contador;
-END IF;
+DELIMITER ;
 
--- Mostrar resultado
-SELECT v_promedio_total AS promedio_total;
-END
-
-$$DELIMITER ;
 
 -- #####################################################
 -- TRIGGERS
@@ -759,7 +751,7 @@ BEGIN
                p_id_docente_auxiliar
            );
     COMMIT;
-END  DELIMITER //;
+END //;
 
 -- #####################################################
 -- VISTAS UTILES
@@ -786,27 +778,27 @@ USE colegiotp;
 
 
 -- INSERTAR ALUMNOS
-CALL sp_crear_alumno("LucasCaraballo", "12345678", "Lucas", "Caraballo", "2003-09-30");
-CALL sp_crear_alumno("AgusMontalvo", "85858585", "Agustina", "Montalvo", "2002-01-15");
-CALL sp_crear_alumno("LucasSain", "75757575", "Lucas", "Sain", "1997-11-21");
-CALL sp_crear_alumno("JuaniP", "123123123", "Juan", "Pardo", "2000-04-25");
-CALL sp_crear_alumno("LuisH", "987654", "Luis", "Hernandez", "2004-05-05");
-CALL sp_crear_alumno("LauraQuispe", "mypass", "Laura", "Quispe", "2002-06-30");
-CALL sp_crear_alumno("DanielPerez", "pass123", "Daniel", "Perez", "2001-07-22");
-CALL sp_crear_alumno("ElenaG", "abcdef", "Elena", "Gomez", "2000-08-19");
-CALL sp_crear_alumno("MiguelT", "passpass", "Miguel", "Torres", "2003-09-10");
-call sp_crear_alumno("MilagrosOtegui", "miliote3", "Milagros", "Otegui", "2009-02-21");
+CALL sp_crear_alumno('LucasCaraballo', '12345678', 'Lucas', 'Caraballo', '2003-09-30');
+CALL sp_crear_alumno('AgusMontalvo', '85858585', 'Agustina', 'Montalvo', '2002-01-15');
+CALL sp_crear_alumno('LucasSain', '75757575', 'Lucas', 'Sain', '1997-11-21');
+CALL sp_crear_alumno('JuaniP', '123123123', 'Juan', 'Pardo', '2000-04-25');
+CALL sp_crear_alumno('LuisH', '987654', 'Luis', 'Hernandez', '2004-05-05');
+CALL sp_crear_alumno('LauraQuispe', 'mypass', 'Laura', 'Quispe', '2002-06-30');
+CALL sp_crear_alumno('DanielPerez', 'pass123', 'Daniel', 'Perez', '2001-07-22');
+CALL sp_crear_alumno('ElenaG', 'abcdef', 'Elena', 'Gomez', '2000-08-19');
+CALL sp_crear_alumno('MiguelT', 'passpass', 'Miguel', 'Torres', '2003-09-10');
+call sp_crear_alumno('MilagrosOtegui', 'miliote3', 'Milagros', 'Otegui', '2009-02-21');
 -- INSERTAR DOCENTES
-call sp_crear_docente("VictorElias", "basededatos3", "Victor Elias", "Gomez", "2007-05-24");
-CALL sp_crear_docente("MariaLopez", "seguridad123", "Maria", "Lopez", "2011-08-15");
-CALL sp_crear_docente("JuanPerez", "password456", "Juan", "Perez", "2015-01-10");
-CALL sp_crear_docente("AnaGarcia", "contraseña789", "Ana", "Garcia", "2014-07-30");
-CALL sp_crear_docente("CarlosMartinez", "martinez321", "Carlos", "Martinez", "2004-11-25");
-CALL sp_crear_docente("LuisRodriguez", "rod12345", "Luis", "Rodriguez", "2003-03-22");
-CALL sp_crear_docente("ElenaHernandez", "hernandez654", "Elena", "Hernandez", "2009-06-18");
-CALL sp_crear_docente("MiguelDiaz", "diaz987", "Miguel", "Diaz", "2021-04-05");
-CALL sp_crear_docente("PatriciaRamos", "ramos111", "Patricia", "Ramos", "2024-09-10");
-CALL sp_crear_docente("JorgeFernandez", "fernandez222", "Jorge", "Fernandez", "2010-02-14");
+call sp_crear_docente('VictorElias', 'basededatos3', 'Victor Elias', 'Gomez', '2007-05-24');
+CALL sp_crear_docente('MariaLopez', 'seguridad123', 'Maria', 'Lopez', '2011-08-15');
+CALL sp_crear_docente('JuanPerez', 'password456', 'Juan', 'Perez', '2015-01-10');
+CALL sp_crear_docente('AnaGarcia', 'contraseña789', 'Ana', 'Garcia', '2014-07-30');
+CALL sp_crear_docente('CarlosMartinez', 'martinez321', 'Carlos', 'Martinez', '2004-11-25');
+CALL sp_crear_docente('LuisRodriguez', 'rod12345', 'Luis', 'Rodriguez', '2003-03-22');
+CALL sp_crear_docente('ElenaHernandez', 'hernandez654', 'Elena', 'Hernandez', '2009-06-18');
+CALL sp_crear_docente('MiguelDiaz', 'diaz987', 'Miguel', 'Diaz', '2021-04-05');
+CALL sp_crear_docente('PatriciaRamos', 'ramos111', 'Patricia', 'Ramos', '2024-09-10');
+CALL sp_crear_docente('JorgeFernandez', 'fernandez222', 'Jorge', 'Fernandez', '2010-02-14');
 -- INSERTAR MATERIAS
 CALL sp_insertar_materia('Matemática', 'Ciencia que estudia las propiedades de los números y las operaciones elementales.');
 CALL sp_insertar_materia('Lengua y literatura', 'Estudio de la lengua y sus manifestaciones literarias.');
@@ -832,5 +824,18 @@ INSERT into calificacion(calificacion, id_materia, id_alumno)
 values (50,1,10);
 INSERT into calificacion(calificacion, id_materia, id_alumno)
 values (100,1,10);
+
+INSERT into calificacion(calificacion, id_materia, id_alumno)
+values (80,2,10);
+INSERT into calificacion(calificacion, id_materia, id_alumno)
+values (70,2,10);
+INSERT into calificacion(calificacion, id_materia, id_alumno)
+values (70,2,10);
+INSERT into calificacion(calificacion, id_materia, id_alumno)
+values (60,2,10);
+INSERT into calificacion(calificacion, id_materia, id_alumno)
+values (40,2,10);
+INSERT into calificacion(calificacion, id_materia, id_alumno)
+values (90,2,10);
 
 CALL calcular_promedio_notas_alumno(10);
